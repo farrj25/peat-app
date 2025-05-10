@@ -8,18 +8,11 @@ import dynamic from 'next/dynamic';
 
 const Map = dynamic(() => import('@/components/Map'), { ssr: false });
 
-export default function PumpDetailPage({ params }: { params: { assetId: string } }) {
+export default function Page({ params }: { params: { assetId: string } }) {
   const router = useRouter();
   const businessId = typeof window !== 'undefined' ? window.location.pathname.split('/')[2] : '';
-  const [assetId, setAssetId] = useState<string>('');
-
-  useEffect(() => {
-    (async () => {
-      const routeParams = await params;
-      setAssetId(routeParams.assetId);
-    })();
-  }, [params]);
-  const [pump, setPump] = useState<any>(null);
+  const assetId = params.assetId;
+  const [pump, setPump] = useState<{ [key: string]: any } | null>(null);
 
   useEffect(() => {
     const fetchPump = async () => {
