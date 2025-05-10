@@ -8,14 +8,7 @@ import dynamic from 'next/dynamic';
 
 const Map = dynamic(() => import('@/components/Map'), { ssr: false });
 
-type PageProps = {
-  params: {
-    businessId: string;
-    assetId: string;
-  };
-};
-
-export default function Page({ params }: PageProps) {
+export default function Page({ params }: { params: Record<string, string> }) {
   const { businessId, assetId } = params;
   const router = useRouter();
   const [pump, setPump] = useState<{ [key: string]: any } | null>(null);
