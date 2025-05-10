@@ -8,7 +8,14 @@ import dynamic from 'next/dynamic';
 
 const Map = dynamic(() => import('@/components/Map'), { ssr: false });
 
-export default function Page({ params }: { params: Record<string, string> }) {
+type Props = {
+  params: {
+    businessId: string;
+    assetId: string;
+  };
+};
+
+export default function Page({ params }: Props) {
   const { businessId, assetId } = params;
   const router = useRouter();
   const [pump, setPump] = useState<{ [key: string]: any } | null>(null);
@@ -17,7 +24,9 @@ export default function Page({ params }: { params: Record<string, string> }) {
     const fetchPump = async () => {
       const ref = doc(db, `businesses/${businessId}/pumps/${assetId}`);
       const snapshot = await getDoc(ref);
-      if (snapshot.exists()) setPump(snapshot.data());
+      if (snapshot.exists()) {
+        setPump(snapshot.data());
+      }
     };
     fetchPump();
   }, [businessId, assetId]);
@@ -51,5 +60,3 @@ export default function Page({ params }: { params: Record<string, string> }) {
     </div>
   );
 }
-
-export const dynamicParams = true;
