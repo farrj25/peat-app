@@ -1,5 +1,6 @@
 'use client';
 
+import * as React from 'react';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { db } from '@/lib/firebase';
@@ -8,14 +9,7 @@ import dynamic from 'next/dynamic';
 
 const Map = dynamic(() => import('@/components/Map'), { ssr: false });
 
-type Props = {
-  params: {
-    businessId: string;
-    assetId: string;
-  };
-};
-
-export default function Page({ params }: Props) {
+export default function Page({ params }: { params: { businessId: string; assetId: string } }) {
   const { businessId, assetId } = params;
   const router = useRouter();
   const [pump, setPump] = useState<{ [key: string]: any } | null>(null);
@@ -24,9 +18,7 @@ export default function Page({ params }: Props) {
     const fetchPump = async () => {
       const ref = doc(db, `businesses/${businessId}/pumps/${assetId}`);
       const snapshot = await getDoc(ref);
-      if (snapshot.exists()) {
-        setPump(snapshot.data());
-      }
+      if (snapshot.exists()) setPump(snapshot.data());
     };
     fetchPump();
   }, [businessId, assetId]);
