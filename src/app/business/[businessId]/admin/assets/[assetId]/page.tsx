@@ -8,10 +8,16 @@ import dynamic from 'next/dynamic';
 
 const Map = dynamic(() => import('@/components/Map'), { ssr: false });
 
-export default function Page({ params }: { params: { assetId: string } }) {
+type PageProps = {
+  params: {
+    businessId: string;
+    assetId: string;
+  };
+};
+
+export default function Page({ params }: PageProps) {
+  const { businessId, assetId } = params;
   const router = useRouter();
-  const businessId = typeof window !== 'undefined' ? window.location.pathname.split('/')[2] : '';
-  const assetId = params.assetId;
   const [pump, setPump] = useState<{ [key: string]: any } | null>(null);
 
   useEffect(() => {
