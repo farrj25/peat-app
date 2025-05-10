@@ -52,3 +52,5 @@ export default function Page({ params }: { params: { assetId: string } }) {
     </div>
   );
 }
+
+export const dynamicParams = true;
