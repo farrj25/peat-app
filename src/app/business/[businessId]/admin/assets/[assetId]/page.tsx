@@ -1,25 +1,19 @@
 'use client';
 
-import * as React from 'react';
+export const dynamic = 'force-dynamic';
+
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { db } from '@/lib/firebase';
 import { doc, getDoc } from 'firebase/firestore';
-import dynamic from 'next/dynamic';
+import nextDynamic from 'next/dynamic';
 
-const Map = dynamic(() => import('@/components/Map'), { ssr: false });
+const Map = nextDynamic(() => import('@/components/Map'), { ssr: false });
 
-type ParamProps = {
-  params: {
-    businessId: string;
-    assetId: string;
-  };
-};
-
-export default function Page({ params }: ParamProps) {
+export default function Page({ params }: { params: { businessId: string; assetId: string } }) {
   const { businessId, assetId } = params;
   const router = useRouter();
-  const [pump, setPump] = useState<{ [key: string]: any } | null>(null);
+  const [pump, setPump] = useState<Record<string, any> | null>(null);
 
   useEffect(() => {
     const fetchPump = async () => {
