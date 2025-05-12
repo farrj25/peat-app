@@ -7,21 +7,26 @@ export default function HomePage() {
   const router = useRouter();
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#ADD8E6] text-gray-800">
-      {/* Top Navigation */}
-      <div className="flex justify-between items-center p-6">
+    <motion.div
+      className="min-h-screen flex flex-col items-center justify-between text-gray-800"
+      style={{ backgroundColor: '#6FB8E9' }}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 1 }}
+    >
+      {/* Top Section: Logo + Login */}
+      <div className="w-full flex flex-col items-center py-6 space-y-2">
         <motion.h1
-          className="text-3xl font-bold text-green-700"
+          className="text-4xl font-extrabold text-green-700"
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
           PEAT
         </motion.h1>
-
         <motion.button
           onClick={() => router.push('/login')}
-          className="bg-yellow-400 text-gray-900 px-4 py-2 rounded hover:bg-yellow-300 font-semibold shadow"
+          className="bg-yellow-400 text-gray-900 px-6 py-2 rounded font-semibold hover:bg-yellow-300 shadow"
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           whileHover={{ scale: 1.05 }}
@@ -31,9 +36,9 @@ export default function HomePage() {
         </motion.button>
       </div>
 
-      {/* Hero Section */}
+      {/* Intro Section */}
       <motion.div
-        className="flex flex-col items-center justify-center text-center px-4 flex-grow"
+        className="text-center px-4 max-w-3xl"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.7 }}
@@ -44,14 +49,19 @@ export default function HomePage() {
         <p className="text-lg md:text-xl text-gray-800 mb-6">
           Track. Maintain. Simplify fuel equipment management.
         </p>
-        <p className="max-w-2xl text-gray-700">
+        <p className="text-gray-700">
           PEAT helps fuel service providers track pumps, tanks, warranties, and service logs—all in one place. 
           Designed for ease-of-use in the field or the office, PEAT brings visibility and control to your fuel equipment operations.
         </p>
       </motion.div>
 
       {/* Features Section */}
-      <div className="bg-white bg-opacity-30 rounded-md mx-auto p-6 mb-10 w-full max-w-3xl shadow-md">
+      <motion.div
+        className="bg-white bg-opacity-80 rounded-2xl mx-auto p-6 my-10 w-full max-w-3xl shadow-lg"
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.6, duration: 0.6 }}
+      >
         <h3 className="text-xl font-semibold text-gray-900 mb-4">Key Features</h3>
         <ul className="space-y-3 text-gray-800 font-medium">
           {[
@@ -63,18 +73,18 @@ export default function HomePage() {
               key={feature}
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 + 0.2 * index, duration: 0.5 }}
+              transition={{ delay: 0.8 + 0.2 * index, duration: 0.5 }}
             >
               {feature}
             </motion.li>
           ))}
         </ul>
-      </div>
+      </motion.div>
 
       {/* Footer */}
-      <footer className="text-center text-gray-600 text-sm py-4 border-t border-gray-300">
+      <footer className="text-center text-gray-600 text-sm py-4 w-full border-t border-gray-300">
         © 2025 Ledger Guard Systems
       </footer>
-    </div>
+    </motion.div>
   );
 }
