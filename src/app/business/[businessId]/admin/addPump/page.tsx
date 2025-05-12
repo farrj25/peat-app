@@ -23,6 +23,7 @@ export default function AddPumpPage() {
     monitorSerial: '',
     gpsLat: '',
     gpsLng: '',
+    externalId: '', // ✅ new field
     notes: '',
   });
 
@@ -97,8 +98,17 @@ export default function AddPumpPage() {
           <input name="gpsLat" placeholder="GPS Latitude" className="border p-2 rounded" onChange={handleChange} />
           <input name="gpsLng" placeholder="GPS Longitude" className="border p-2 rounded" onChange={handleChange} />
 
+          {/* ✅ New field for barcode ID */}
+          <input
+            name="externalId"
+            placeholder="External Barcode ID (e.g. 001233113)"
+            className="border p-2 rounded"
+            onChange={handleChange}
+          />
+
           <textarea name="notes" placeholder="Notes" className="border p-2 rounded" onChange={handleChange} />
         </div>
+
         <div className="mt-6 flex space-x-4">
           <button onClick={handleSubmit} className="bg-blue-700 text-white px-4 py-2 rounded hover:bg-blue-800">
             Confirm

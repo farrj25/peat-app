@@ -42,10 +42,7 @@ export default function TechDashboardPage() {
         </div>
         <h2 className="text-xl font-semibold mb-6 text-center">Navigation</h2>
         <div className="flex flex-col space-y-4">
-          <button
-            onClick={handleLogout}
-            className={buttonStyle}
-          >
+          <button onClick={handleLogout} className={buttonStyle}>
             Logout
           </button>
         </div>
@@ -53,6 +50,13 @@ export default function TechDashboardPage() {
 
       <main className="flex-1 p-8">
         <h1 className="text-2xl font-bold mb-4">Technician Dashboard</h1>
+        <button
+          onClick={() => router.push('/scan')}
+          className="bg-green-600 text-white px-4 py-2 mb-6 rounded hover:bg-green-700"
+        >
+          Scan Barcode
+        </button>
+
         <p className="mb-6">Read-only view of your assigned equipment. Click an asset to view details and add notes.</p>
         <ul className="space-y-2">
           {pumps.map((pump) => (
