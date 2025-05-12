@@ -8,86 +8,85 @@ export default function HomePage() {
 
   return (
     <motion.div
-      className="min-h-screen flex flex-col items-center justify-between text-gray-100"
-      style={{ backgroundColor: '#4682B4' }}
+      className="min-h-screen flex flex-col items-center justify-between text-gray-800"
+      style={{ backgroundColor: '#6FB8E9' }}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      transition={{ duration: 0.8 }}
+      transition={{ duration: 1 }}
     >
-      {/* Header */}
-      <div className="w-full flex flex-col items-center pt-8 space-y-4">
+      {/* Top Section: Logo + Login */}
+      <div className="w-full flex flex-col items-center py-6 space-y-2">
         <motion.h1
-          className="text-3xl font-semibold tracking-tight text-gray-100 drop-shadow"
-          initial={{ opacity: 0, y: -15 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
+          className="text-4xl font-extrabold tracking-wide flex gap-1"
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ type: 'spring', stiffness: 100, duration: 0.8 }}
         >
-          PEAT
+          <span className="text-green-700">P</span>
+          <span className="text-yellow-500">E</span>
+          <span className="text-gray-800">A</span>
+          <span className="text-green-700">T</span>
         </motion.h1>
 
         <motion.button
           onClick={() => router.push('/login')}
-          className="bg-gray-800 text-white px-5 py-2 rounded-md hover:bg-gray-700 transition"
+          className="bg-yellow-400 text-gray-900 px-6 py-2 rounded font-semibold hover:bg-yellow-300 shadow"
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
-          whileHover={{ scale: 1.02 }}
-          transition={{ duration: 0.3 }}
+          whileHover={{ scale: 1.05 }}
+          transition={{ duration: 0.4 }}
         >
           Login
         </motion.button>
       </div>
 
-      {/* Tagline and Intro */}
+      {/* Intro Section */}
       <motion.div
-        className="text-center px-4 max-w-2xl mt-10"
+        className="text-center px-4 max-w-3xl"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
+        transition={{ duration: 0.7 }}
       >
-        <h2 className="text-xl md:text-2xl font-medium text-white mb-2">
+        <h2 className="text-2xl md:text-3xl font-semibold text-gray-700 mb-2">
           Petroleum Equipment Asset Tracker
         </h2>
-        <p className="text-gray-200 mb-4">
+        <p className="text-lg md:text-xl text-gray-800 mb-6">
           Track. Maintain. Simplify fuel equipment management.
         </p>
-        <p className="text-sm text-gray-200 leading-relaxed">
-          PEAT helps fuel service providers monitor pumps, tanks, warranties, and service records—all from one secure platform.
-          Designed for rugged field use and enterprise coordination, PEAT gives operators the clarity and control they need.
+        <p className="text-gray-700">
+          PEAT helps fuel service providers track pumps, tanks, warranties, and service logs—all in one place. 
+          Designed for ease-of-use in the field or the office, PEAT brings visibility and control to your fuel equipment operations.
         </p>
       </motion.div>
 
-      {/* Features */}
+      {/* Features Section */}
       <motion.div
-        className="w-full max-w-3xl px-6 py-10"
-        initial={{ opacity: 0, y: 20 }}
+        className="bg-white bg-opacity-80 rounded-2xl mx-auto p-6 my-10 w-full max-w-3xl shadow-lg"
+        initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.4, duration: 0.5 }}
+        transition={{ delay: 0.6, duration: 0.6 }}
       >
-        <h3 className="text-lg font-semibold text-white border-b border-gray-300 pb-2 mb-6 text-center">
-          Key Features
-        </h3>
-        <ul className="space-y-5 text-sm text-gray-200 font-light">
+        <h3 className="text-xl font-semibold text-gray-900 mb-4">Key Features</h3>
+        <ul className="space-y-3 text-gray-800 font-medium">
           {[
-            { icon: '📍', text: 'Track assets by location, tank, and GPS coordinates' },
-            { icon: '🛠', text: 'Log maintenance with automatic reminders' },
-            { icon: '🔗', text: 'Scan QR codes to access equipment history' },
-          ].map((item, index) => (
+            '📍 Location-based equipment inventory',
+            '🛠 Maintenance logs with reminders',
+            '📎 QR code access in the field',
+          ].map((feature, index) => (
             <motion.li
-              key={item.text}
-              className="flex items-start gap-3"
-              initial={{ opacity: 0, x: -10 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.6 + 0.15 * index, duration: 0.4 }}
+              key={feature}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.8 + 0.2 * index, duration: 0.5 }}
             >
-              <span className="text-gray-300 text-lg">{item.icon}</span>
-              <span>{item.text}</span>
+              {feature}
             </motion.li>
           ))}
         </ul>
       </motion.div>
 
       {/* Footer */}
-      <footer className="w-full text-center text-xs text-gray-300 py-4 border-t border-gray-400">
+      <footer className="text-center text-gray-600 text-sm py-4 w-full border-t border-gray-300">
         © 2025 Ledger Guard Systems
       </footer>
     </motion.div>
