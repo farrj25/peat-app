@@ -17,17 +17,13 @@ export default function HomePage() {
       {/* Top Section: Logo + Login */}
       <div className="w-full flex flex-col items-center py-6 space-y-2">
         <motion.h1
-          className="text-4xl font-extrabold tracking-wide flex gap-1"
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ type: 'spring', stiffness: 100, duration: 0.8 }}
+          className="text-4xl font-extrabold text-green-700"
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
         >
-          <span className="text-green-700">P</span>
-          <span className="text-yellow-500">E</span>
-          <span className="text-gray-800">A</span>
-          <span className="text-green-700">T</span>
+          PEAT
         </motion.h1>
-
         <motion.button
           onClick={() => router.push('/login')}
           className="bg-yellow-400 text-gray-900 px-6 py-2 rounded font-semibold hover:bg-yellow-300 shadow"
