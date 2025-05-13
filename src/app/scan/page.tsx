@@ -9,7 +9,7 @@ import { db, auth } from '@/lib/firebase';
 export default function ScanPage() {
   const router = useRouter();
   const videoRef = useRef<HTMLVideoElement | null>(null);
-  const [message, setMessage] = useState('Point your camera at a barcode...');
+  const [message, setMessage] = useState('');
   const [authorized, setAuthorized] = useState(false);
   const [scanning, setScanning] = useState(false);
   const [scanControl, setScanControl] = useState<{ stop: () => void } | null>(null);
@@ -27,50 +27,57 @@ export default function ScanPage() {
   }, [router]);
 
   const startScan = async () => {
+    setMessage('Initializing camera...');
     const reader = new BrowserMultiFormatReader();
 
     try {
       const devices = await BrowserMultiFormatReader.listVideoInputDevices();
+      console.log('🟡 Devices:', devices);
+
       const deviceId = devices[0]?.deviceId;
 
       if (!deviceId || !videoRef.current) {
-        setMessage('No camera found.');
+        setMessage('❌ No camera found. Please check browser permissions.');
         return;
       }
 
       setScanning(true);
 
-      reader.decodeFromVideoDevice(
-        deviceId,
-        videoRef.current,
-        async (result, error, control) => {
-          setScanControl(control); // ✅ Store for later cancel
+      // Delay to avoid DOM timing issues
+      setTimeout(() => {
+        reader.decodeFromVideoDevice(
+          deviceId,
+          videoRef.current!,
+          async (result, error, control) => {
+            setScanControl(control);
 
-          if (result) {
-            setMessage(`Scanned: ${result.getText()}`);
-            control.stop(); // ✅ Stop camera
+            if (result) {
+              setMessage(`✅ Scanned: ${result.getText()}`);
+              control.stop();
 
-            const scannedCode = result.getText();
-            const pumpsRef = collectionGroup(db, 'pumps');
-            const q = query(pumpsRef, where('externalId', '==', scannedCode));
-            const snapshot = await getDocs(q);
+              const scannedCode = result.getText();
+              const pumpsRef = collectionGroup(db, 'pumps');
+              const q = query(pumpsRef, where('externalId', '==', scannedCode));
+              const snapshot = await getDocs(q);
 
-            if (!snapshot.empty) {
-              const doc = snapshot.docs[0];
-              const pathSegments = doc.ref.path.split('/');
-              const businessId = pathSegments[1];
-              const pumpId = doc.id;
+              if (!snapshot.empty) {
+                const doc = snapshot.docs[0];
+                const pathSegments = doc.ref.path.split('/');
+                const businessId = pathSegments[1];
+                const pumpId = doc.id;
 
-              router.push(`/business/${businessId}/pumps/${pumpId}`);
-            } else {
-              setMessage('No matching pump found.');
-              setScanning(false);
+                router.push(`/business/${businessId}/pumps/${pumpId}`);
+              } else {
+                setMessage('No matching pump found.');
+                setScanning(false);
+              }
             }
           }
-        }
-      );
+        );
+      }, 300);
     } catch (err) {
-      setMessage(`Camera error: ${err}`);
+      console.error('Camera init error:', err);
+      setMessage(`⚠️ Camera error: ${err}`);
     }
   };
 
@@ -110,7 +117,7 @@ export default function ScanPage() {
         </>
       )}
 
-      <p className="text-gray-700 mb-6">{message}</p>
+      {message && <p className="text-gray-700 mb-6">{message}</p>}
 
       <button
         onClick={() => router.back()}
