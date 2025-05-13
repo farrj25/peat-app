@@ -11,6 +11,8 @@ export default function ScanPage() {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const [message, setMessage] = useState('Point your camera at a barcode...');
   const [authorized, setAuthorized] = useState(false);
+  const [scanning, setScanning] = useState(false);
+  const [scanControl, setScanControl] = useState<{ stop: () => void } | null>(null);
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
@@ -24,58 +26,98 @@ export default function ScanPage() {
     return () => unsubscribe();
   }, [router]);
 
-  useEffect(() => {
-    if (!authorized) return;
+  const startScan = async () => {
+    const reader = new BrowserMultiFormatReader();
 
-    const codeReader = new BrowserMultiFormatReader();
+    try {
+      const devices = await BrowserMultiFormatReader.listVideoInputDevices();
+      const deviceId = devices[0]?.deviceId;
 
-    BrowserMultiFormatReader.listVideoInputDevices()
-      .then((devices) => {
-        const deviceId = devices[0]?.deviceId;
-        if (!deviceId || !videoRef.current) return;
+      if (!deviceId || !videoRef.current) {
+        setMessage('No camera found.');
+        return;
+      }
 
-        codeReader.decodeFromVideoDevice(
-          deviceId,
-          videoRef.current,
-          async (result, error, control) => {
-            if (result) {
-              setMessage(`Scanned: ${result.getText()}`);
-              control.stop();
+      setScanning(true);
 
-              const scannedCode = result.getText();
-              const pumpsRef = collectionGroup(db, 'pumps');
-              const q = query(pumpsRef, where('externalId', '==', scannedCode));
-              const snapshot = await getDocs(q);
+      reader.decodeFromVideoDevice(
+        deviceId,
+        videoRef.current,
+        async (result, error, control) => {
+          setScanControl(control); // ✅ Store for later cancel
 
-              if (!snapshot.empty) {
-                const doc = snapshot.docs[0];
-                const pathSegments = doc.ref.path.split('/');
-                const businessId = pathSegments[1];
-                const pumpId = doc.id;
+          if (result) {
+            setMessage(`Scanned: ${result.getText()}`);
+            control.stop(); // ✅ Stop camera
 
-                router.push(`/business/${businessId}/pumps/${pumpId}`);
-              } else {
-                setMessage('No matching pump found.');
-              }
+            const scannedCode = result.getText();
+            const pumpsRef = collectionGroup(db, 'pumps');
+            const q = query(pumpsRef, where('externalId', '==', scannedCode));
+            const snapshot = await getDocs(q);
+
+            if (!snapshot.empty) {
+              const doc = snapshot.docs[0];
+              const pathSegments = doc.ref.path.split('/');
+              const businessId = pathSegments[1];
+              const pumpId = doc.id;
+
+              router.push(`/business/${businessId}/pumps/${pumpId}`);
+            } else {
+              setMessage('No matching pump found.');
+              setScanning(false);
             }
           }
-        );
-      })
-      .catch((err) => setMessage(`Camera error: ${err}`));
+        }
+      );
+    } catch (err) {
+      setMessage(`Camera error: ${err}`);
+    }
+  };
 
-   return () => {
-  // cleanup handled by control.stop() inside the handler
-};
-
-  }, [authorized, router]);
+  const stopScan = () => {
+    if (scanControl) {
+      scanControl.stop();
+      setScanControl(null);
+      setScanning(false);
+      setMessage('Scan cancelled.');
+    }
+  };
 
   if (!authorized) return null;
 
   return (
     <div className="flex flex-col items-center p-6">
       <h1 className="text-2xl font-bold mb-4">Scan Pump Barcode</h1>
-      <video ref={videoRef} className="w-full max-w-md rounded shadow" />
-      <p className="mt-4 text-gray-700">{message}</p>
+
+      {!scanning && (
+        <button
+          onClick={startScan}
+          className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 mb-4"
+        >
+          Start Scan
+        </button>
+      )}
+
+      {scanning && (
+        <>
+          <video ref={videoRef} className="w-full max-w-md rounded shadow mb-4" />
+          <button
+            onClick={stopScan}
+            className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 mb-4"
+          >
+            Cancel Scan
+          </button>
+        </>
+      )}
+
+      <p className="text-gray-700 mb-6">{message}</p>
+
+      <button
+        onClick={() => router.back()}
+        className="text-blue-600 underline hover:text-blue-800"
+      >
+        ← Back to Dashboard
+      </button>
     </div>
   );
 }
